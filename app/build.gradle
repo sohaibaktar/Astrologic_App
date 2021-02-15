@@ -45,6 +45,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.github.mukeshsolanki:android-otpview-pinview:2.1.2'
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
 
     implementation "androidx.recyclerview:recyclerview:1.1.0"
     // For control over item selection of both touch and mouse driven selection

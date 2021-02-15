@@ -1,16 +1,16 @@
 package com.b.chatapp_personal;
 
 public class User {
-    private String uid, name, phoneNumber, profileImage;
+    private String uid,name,phoneNumber,prifileImage;
 
     public User() {
     }
 
-    public User(String uid, String name, String phoneNumber, String profileImage) {
+    public User(String uid, String name, String phoneNumber, String prifileImage) {
         this.uid = uid;
         this.name = name;
         this.phoneNumber = phoneNumber;
-        this.profileImage = profileImage;
+        this.prifileImage = prifileImage;
     }
 
     public String getUid() {
@@ -37,11 +37,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getProfileImage() {
-        return profileImage;
+    public String getPrifileImage() {
+        return prifileImage;
     }
 
-    public void setProfileImage(String profileImage) {
-        this.profileImage = profileImage;
+    public void setPrifileImage(String prifileImage) {
+        this.prifileImage = prifileImage;
     }
 }

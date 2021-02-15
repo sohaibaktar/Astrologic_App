@@ -4,8 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.b.chatapp_personal.databinding.ActivityOTPBinding;
@@ -23,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 public class OTP_Activity extends AppCompatActivity {
 
-    ActivityOTPBinding binding;
+ ActivityOTPBinding binding;
     FirebaseAuth auth;
     String verificationId;
     ProgressDialog dialog;
@@ -33,17 +36,17 @@ public class OTP_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityOTPBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         auth = FirebaseAuth.getInstance();
 
+        String phoneNumber = getIntent().getStringExtra("phoneNumber");
+
+        binding.phoneLbl.setText("Verify " + phoneNumber);
+//fir Dialog box it seems while not messege is sending.
         dialog = new ProgressDialog(this);
         dialog.setMessage("Sending OTP...");
         dialog.setCancelable(false);
         dialog.show();
-
-        getSupportActionBar().hide();
-
-        String phoneNumber = getIntent().getStringExtra("phoneNumber");
-        binding.phoneLbl.setText("Verify " + phoneNumber);
 
         PhoneAuthOptions options = PhoneAuthOptions.newBuilder(auth)
                 .setPhoneNumber(phoneNumber)
@@ -64,31 +67,29 @@ public class OTP_Activity extends AppCompatActivity {
                     public void onCodeSent(@NonNull String verifyId, @NonNull PhoneAuthProvider.ForceResendingToken forceResendingToken) {
                         super.onCodeSent(verifyId, forceResendingToken);
                         dialog.dismiss();
-                        verificationId =verifyId;
+                        verificationId = verifyId;
                     }
                 }).build();
-
         PhoneAuthProvider.verifyPhoneNumber(options);
 
-        binding.otpView.setOtpCompletionListener(new OnOtpCompletionListener() {
-            @Override
-            public void onOtpCompleted(String otp) {
-                PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, otp);
+    binding.otpView.setOtpCompletionListener(new OnOtpCompletionListener() {
+        @Override
+        public void onOtpCompleted(String otp) {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId,otp);
 
-                auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            //Intent intent = new Intent(OTP_Activity.this, SetupProfileActivity.class);
-                            //startActivity(intent);
-                            //finishAffinity();
-                            Toast.makeText(OTP_Activity.this, "Succesfully.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(OTP_Activity.this, "Failed.", Toast.LENGTH_SHORT).show();
-                        }
+            auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if(task.isSuccessful()){
+                        Intent intent = new Intent(OTP_Activity.this, SetupProfileActivity.class);
+                        startActivity(intent);
+                        finishAffinity();                    }else{
+                        Toast.makeText(getApplicationContext(),"Failed",Toast.LENGTH_LONG).show();
                     }
-                });
-            }
-        });
+                }
+            });
+        }
+    });
+
     }
 }
